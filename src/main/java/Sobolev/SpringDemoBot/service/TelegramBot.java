@@ -134,11 +134,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     }
 
-    private void sendMessage(long chatId, String textToSend) {
-        SendMessage message = new SendMessage();
-        message.setChatId(String.valueOf(chatId));
-        message.setText(textToSend);
-
+    public ReplyKeyboardMarkup keyboardMarkup() { //вынос клавиатуры в отдельный метод
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
 
         List<KeyboardRow> keyboardRows = new ArrayList<>();
@@ -160,7 +156,39 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         keyboardMarkup.setKeyboard(keyboardRows);
 
-        message.setReplyMarkup(keyboardMarkup);
+        return keyboardMarkup;
+
+    }
+
+    private void sendMessage(long chatId, String textToSend) {
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText(textToSend);
+
+//        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(); //вынесли в keyboardMarkup()
+//
+//        List<KeyboardRow> keyboardRows = new ArrayList<>();
+//
+//        KeyboardRow row = new KeyboardRow();
+//
+//        row.add("weather");
+//        row.add("get random joke");
+//
+//        keyboardRows.add(row);
+//
+//        row = new KeyboardRow();
+//
+//        row.add("register");
+//        row.add("check my data");
+//        row.add("delete my data");
+//
+//        keyboardRows.add(row);
+//
+//        keyboardMarkup.setKeyboard(keyboardRows);
+//
+//        message.setReplyMarkup(keyboardMarkup);
+
+        message.setReplyMarkup(keyboardMarkup());
 
         try {
             execute(message);
