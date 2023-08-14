@@ -2,6 +2,7 @@ package Sobolev.SpringDemoBot.service;
 
 import Sobolev.SpringDemoBot.config.BotConfig;
 
+import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 
 import Sobolev.SpringDemoBot.model.User;
@@ -85,6 +86,16 @@ public class TelegramBot extends TelegramLongPollingBot {
         if(update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
            long chatId= update.getMessage().getChatId();
+
+            // Рассылка сообщения всем
+            if(messageText.contains("/send") && config.getOwnerId() == chatId) { //рассылка только от владельца бота
+                var textToSend = EmojiParser.parseToUnicode(messageText.substring(messageText.indexOf(" ")));
+                var users = userRepository.findAll();
+                for (User user: users){
+                    sendMessage(user.getChatId(), textToSend);
+                }
+            }
+            // end
 
             switch (messageText) {
                 case "/start":
