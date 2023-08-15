@@ -8,6 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
+@EnableScheduling // наличие методов с автозапуском
 @Data
 @PropertySource("application.properties")
 public class BotConfig {

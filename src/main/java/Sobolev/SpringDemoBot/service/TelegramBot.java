@@ -2,6 +2,8 @@ package Sobolev.SpringDemoBot.service;
 
 import Sobolev.SpringDemoBot.config.BotConfig;
 
+import Sobolev.SpringDemoBot.model.Ads;
+import Sobolev.SpringDemoBot.model.AdsRepository;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,6 +40,8 @@ import java.util.List;
 public class TelegramBot extends TelegramLongPollingBot {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AdsRepository adsRepository;
     final BotConfig config;
     static final String HELP_TEXT = "This bot is Demo bot, GL HF.\n\n" +
 
@@ -266,6 +270,19 @@ public class TelegramBot extends TelegramLongPollingBot {
         catch (TelegramApiException e) {
             log.error(ERROR_TEXT + e.getMessage());
 
+        }
+    }
+
+    @Scheduled(cron = "${cron.scheduler}")
+    private void sendAds() { // метод запуска авт рассылки
+
+        var ads = adsRepository.findAll();
+        var users = userRepository.findAll();
+
+        for (Ads ad : ads) {
+            for (User user : users) {
+                prepareAndSendMessage(user.getChatId(), ad.getAd());
+            }
         }
     }
 
